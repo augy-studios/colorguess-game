@@ -18,7 +18,7 @@ export class Wheel {
     this.onChange = onChange;
     this.h = 0;
     this.s = 0;
-    this.v = 0.5;
+    this.v = 1;
     this.interactive = false;
     this.drawnFor = null;
 
@@ -57,11 +57,12 @@ export class Wheel {
     return hsvToColor(this.h, this.s, this.v);
   }
 
-  // A fresh pick for a new question: mid grey, in the middle of the wheel.
+  // A fresh pick for a new question: full brightness, so the wheel shows its
+  // brightest colours, with the pick on white in the middle.
   reset() {
     this.h = 0;
     this.s = 0;
-    this.v = 0.5;
+    this.v = 1;
     this.els.target.classList.add("hidden");
     this.changed();
   }
