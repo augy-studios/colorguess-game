@@ -6,5 +6,23 @@
     "rewrites": [{
         "source": "/",
         "destination": "/"
+    }],
+    "functions": {
+        "api/game/start.js": {
+            "includeFiles": "js/seed.js"
+        },
+        "api/game/finish.js": {
+            "includeFiles": "js/{seed,color,quiz,score}.js"
+        },
+        "api/game/submit.js": {
+            "includeFiles": "js/{seed,color,quiz,score}.js"
+        },
+        "api/replay/save.js": {
+            "includeFiles": "js/{seed,color,quiz,record}.js"
+        }
+    },
+    "headers": [{
+        "source": "/sw.js",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
     }]
 }

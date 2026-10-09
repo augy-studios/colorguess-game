@@ -1,0 +1,933 @@
+/* App layout and components. Theme tokens and primitives are in theme.css. */
+
+:root[data-mode="dark"] { color-scheme: dark; }
+
+/* Fixed-meaning colours, the exception to theme tokens like the footer
+   heart. The right and wrong marks sit on any swatch at all, so they keep
+   the original game's green and red with a white ring whatever the theme. A
+   hex label on a swatch is dark or light by the swatch, not the page, and a
+   QR code is dark on light or it does not scan. Defined once here. */
+:root {
+  --mark-right: #39b54a;
+  --mark-wrong: #dd272d;
+  --mark-ring: #ffffff;
+  --label-dark: #121815;
+  --label-light: #ffffff;
+  --qr-light: #ffffff;
+  --qr-dark: #121815;
+  /* Edges for swatches and the wheel, which can be any colour, the page's
+     included. */
+  --swatch-edge: color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+h1, h2, h3 { font-weight: normal; }
+
+:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* The update bar, when there is one, then the page column. */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14px;
+  padding-top: max(14px, env(safe-area-inset-top));
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 7px;
+}
+.brand-name {
+  font-size: 1.2rem;
+  color: var(--brand-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 20px;
+  text-align: center;
+}
+.card p {
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.footer-heart {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+  /* Fixed meaning: reads as a heart whatever the brand colour. */
+  color: #34c759;
+}
+.footer-heart svg { width: 100%; height: 100%; }
+
+/* Buttons. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.btn-primary {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.btn-primary:hover { background: var(--brand-fill-strong); }
+.btn-quiet {
+  color: var(--ink);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-strong);
+}
+.pill { border-radius: 999px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.chip:empty { display: none; }
+.chip-btn { cursor: pointer; letter-spacing: 0.03em; }
+
+/* The game card. Panels swap with a class flip; the entrance is CSS. */
+.game .hidden { display: none !important; }
+
+.panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: panel-in 0.2s ease;
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+.panel-title {
+  font-size: 1.3rem;
+  color: var(--brand-ink);
+}
+
+/* New game. */
+.setup { gap: 14px; }
+.field-group {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+.field-label {
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.card .field-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.card .field-note.error { color: var(--error); }
+.field-note:empty { display: none; }
+.mode-toggle.thirds { grid-template-columns: repeat(3, 1fr); }
+.mode-toggle.fourths { grid-template-columns: repeat(4, 1fr); }
+.mode-btn[aria-checked="true"] {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.mode-btn { color: var(--muted-strong); }
+
+.custom-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.custom-count .field { flex: 0 0 110px; }
+.field-suffix {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.card .link-note {
+  width: 100%;
+  max-width: 460px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+  color: var(--warn);
+  font-size: 0.9rem;
+}
+
+.start-btn {
+  padding: 12px 26px;
+  font-size: 1rem;
+}
+.start-btn svg { width: 18px; height: 18px; }
+.join {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--surface-border);
+  text-align: left;
+}
+
+/* Text fields: the seed, a join code, and the leaderboard name. */
+.guess {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 460px;
+}
+.field {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-strong);
+  /* 3:1 against the card, as a field's edge must be. */
+  border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+  color: var(--ink);
+  font-size: 1rem;
+}
+.field::placeholder { color: var(--muted-strong); opacity: 1; }
+.seed-field,
+.code-field { letter-spacing: 0.06em; text-transform: uppercase; }
+.seed-field::placeholder,
+.code-field::placeholder { letter-spacing: normal; text-transform: none; }
+.field.shake { animation: shake 0.3s ease; }
+@keyframes shake {
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+}
+.guess .btn {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+}
+
+/* The game. */
+.play { gap: 10px; }
+.game-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.timer-row {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.timer-bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+}
+.timer-fill {
+  display: block;
+  height: 100%;
+  background: var(--brand-ink);
+  transform-origin: left center;
+  transition: background-color 0.2s ease;
+}
+.timer-bar.low .timer-fill { background: var(--error); }
+.timer-text {
+  min-width: 2.6em;
+  font-size: 0.9rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.card .prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.prompt-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.prompt-hex {
+  font-size: 2.2rem;
+  letter-spacing: 0.06em;
+  color: var(--brand-ink);
+  user-select: text;
+}
+
+/* Swatches: two columns of four in Normal, three of six in Hard. */
+.options {
+  width: 100%;
+  max-width: 520px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.options[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
+.swatch-opt {
+  position: relative;
+  height: 9.5em;
+  border-radius: 16px;
+  background: var(--swatch);
+  border: 1px solid var(--swatch-edge);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.15s ease;
+  animation: swatch-in 0.2s ease both;
+}
+.options[data-count="6"] .swatch-opt { height: 7.5em; }
+@keyframes swatch-in {
+  from { opacity: 0; transform: scale(0.96); }
+}
+.swatch-opt:not(:disabled):hover { transform: translateY(-2px); }
+.swatch-opt:disabled { cursor: default; opacity: 1; }
+.swatch-opt.chosen { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--brand-ink); }
+/* Stepped back by size, not opacity, so the hex label on it stays readable. */
+.swatch-opt.faded { transform: scale(0.94); box-shadow: none; }
+.opt-hex {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+.opt-hex[data-ink="dark"],
+.swatch-hex[data-ink="dark"] { color: var(--label-dark); }
+.opt-hex[data-ink="light"],
+.swatch-hex[data-ink="light"] { color: var(--label-light); }
+
+.mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3em;
+  height: 3em;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.mark:empty { display: none; }
+.mark svg {
+  width: 100%;
+  height: 100%;
+  animation: mark-in 0.2s ease;
+}
+@keyframes mark-in {
+  from { opacity: 0; transform: scale(0.7); }
+}
+.mark-disc { stroke: var(--mark-ring); stroke-width: 3.65px; }
+.mark-glyph { fill: var(--mark-ring); }
+[data-icon="correct"] .mark-disc { fill: var(--mark-right); }
+[data-icon="incorrect"] .mark-disc { fill: var(--mark-wrong); }
+
+/* Expert: the wheel, and the brightness, the pick and Lock in beside it. */
+.wheel-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.wheel-wrap {
+  position: relative;
+  width: min(260px, 72vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--swatch-edge);
+  box-shadow: var(--shadow);
+  cursor: crosshair;
+  /* A finger on the wheel picks a colour rather than scrolling. */
+  touch-action: none;
+}
+.wheel-wrap.locked { cursor: default; }
+.wheel-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.wheel-dot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  border: 3px solid var(--mark-ring);
+  box-shadow: 0 0 0 1px var(--label-dark), 0 2px 6px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+.wheel-dot.target {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: none;
+  background: var(--mark-right);
+  color: var(--mark-ring);
+}
+.wheel-dot.target svg { width: 22px; height: 22px; }
+.wheel-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(200px, 80vw);
+}
+/* The track shows the colour going from black to full brightness: it is the
+   picker itself, like the wheel, so it is the one gradient on the page. */
+.brightness {
+  width: 100%;
+  height: 22px;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  border: 1px solid var(--swatch-edge);
+  background: linear-gradient(to right, #000000, var(--wheel-top, #ffffff));
+}
+.brightness::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--mark-ring);
+  border: 2px solid var(--label-dark);
+}
+.brightness::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--mark-ring);
+  border: 2px solid var(--label-dark);
+}
+.pick-preview {
+  width: 100%;
+  height: 70px;
+  border-radius: 14px;
+  border: 1px solid var(--swatch-edge);
+  box-shadow: var(--shadow);
+}
+
+.compare {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  animation: panel-in 0.2s ease;
+}
+.compare figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.swatch-big {
+  display: grid;
+  place-items: end center;
+  width: 120px;
+  height: 80px;
+  padding-bottom: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--swatch-edge);
+}
+.swatch-big.empty { border-style: dashed; }
+.swatch-big.empty .swatch-hex { color: var(--muted); }
+.swatch-hex { font-size: 0.85rem; letter-spacing: 0.04em; }
+
+.card .status {
+  min-height: 1.5em;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.game-actions .btn { padding: 9px 15px; }
+#quitBtn.armed {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+/* Multiplayer. */
+.net-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.net-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--busy);
+}
+.net-bar[data-tone="ok"] .net-dot { background: var(--ok); }
+.net-bar[data-tone="warn"] .net-dot { background: var(--warn); }
+.net-bar[data-tone="error"] .net-dot { background: var(--error); }
+
+.net .net-lead { color: var(--muted); max-width: 30em; }
+.code-big {
+  font-size: 2.4rem;
+  letter-spacing: 0.22em;
+  color: var(--brand-ink);
+  user-select: text;
+}
+.qr svg {
+  width: 180px;
+  height: 180px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+.qr .qr-bg { fill: var(--qr-light); }
+.qr .qr-fg { fill: var(--qr-dark); }
+.card .net-status { min-height: 1.5em; color: var(--ink); }
+.card .net-status.error { color: var(--error); }
+
+.players {
+  list-style: none;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.players:empty { display: none; }
+.players li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  color: var(--ink);
+  text-align: left;
+  animation: panel-in 0.2s ease;
+}
+.players [data-icon] { display: inline-flex; width: 18px; height: 18px; color: var(--muted-strong); }
+.players svg { width: 100%; height: 100%; }
+.pl-name { flex: 1; overflow-wrap: anywhere; }
+.pl-tag {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+
+.standings {
+  list-style: none;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.standings:empty { display: none; }
+.standings li {
+  display: grid;
+  grid-template-columns: 1.6em 1fr 20px auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-align: left;
+}
+.standings li.me {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.standings li.gone { opacity: 0.55; }
+.st-place { color: inherit; font-variant-numeric: tabular-nums; }
+.st-name { overflow-wrap: anywhere; }
+.st-done { display: inline-flex; width: 18px; height: 18px; color: var(--ok); }
+.standings li.me .st-done { color: var(--on-brand); }
+.st-done svg { width: 100%; height: 100%; }
+.st-score { font-variant-numeric: tabular-nums; }
+
+/* The replay. */
+.replay {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--surface-border);
+  animation: panel-in 0.2s ease;
+}
+.replay-controls {
+  display: flex;
+  gap: 8px;
+}
+.replay-controls .play-btn {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.speed-pick { width: min(100%, 280px); }
+.scrub {
+  width: 100%;
+  accent-color: var(--brand-ink);
+}
+.card .replay-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.q-list {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+.q-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 52px;
+  padding: 5px 6px;
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+.q-btn.current {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.q-num { color: inherit; }
+.q-mark { display: inline-flex; width: 20px; height: 20px; }
+.q-mark svg { width: 100%; height: 100%; }
+.q-mark[data-icon="target"] { color: var(--warn); }
+.q-btn.current .q-mark[data-icon="target"] { color: var(--on-brand); }
+
+/* A finished game. */
+.result {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--surface-border);
+  animation: panel-in 0.2s ease;
+}
+.result-title {
+  font-size: 1.7rem;
+  color: var(--brand-ink);
+}
+.result-title:focus { outline: none; }
+.card .result-score { font-size: 1.3rem; }
+.card .result-reason { color: var(--muted); max-width: 32em; }
+.seed-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.seed-text {
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  user-select: text;
+}
+.submit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+.submit-label {
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.card .submit-msg {
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: var(--error);
+}
+.card .submit-note,
+.card .not-scored {
+  font-size: 0.8rem;
+  color: var(--muted);
+  max-width: 30em;
+}
+.submitted {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 460px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  text-align: left;
+}
+.card .submitted p { color: var(--ok); }
+.ok-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--ok);
+}
+.ok-icon svg { width: 100%; height: 100%; }
+
+.round-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.round-actions .btn { padding: 9px 16px; }
+
+/* Settings modal. */
+.modal .hidden { display: none !important; }
+.saved-name {
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.modal .guess { max-width: none; }
+.clear-name { align-self: flex-start; }
+
+.setting-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-align: left;
+}
+.setting-toggle > span:first-child { flex: 1; }
+.switch-state {
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+}
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--muted-strong);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.setting-toggle[aria-checked="true"] .switch {
+  background: var(--brand-ink);
+  border-color: var(--brand-ink);
+}
+.setting-toggle[aria-checked="true"] .switch::after {
+  background: var(--bg);
+  transform: translateX(16px);
+}
+
+/* Leaderboard modal. */
+.board-body {
+  min-height: 120px;
+  max-height: 50vh;
+  overflow-y: auto;
+  transition: opacity 0.15s ease;
+}
+.board-body[aria-busy="true"] { opacity: 0.6; }
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.board-table th {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: normal;
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+}
+.board-table td {
+  padding: 7px 8px;
+  border-top: 1px solid var(--surface-border);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.board-table th:first-child,
+.board-table td:first-child { width: 2.5em; color: var(--muted-strong); }
+.board-empty {
+  padding: 32px 8px;
+  text-align: center;
+  color: var(--muted-strong);
+}
+
+/* Update bar, per update-bar-spec.md. Quieter than the header, full width,
+   tinted enough to read as a notice. */
+.update-notice {
+  flex: none;
+  background: color-mix(in srgb, var(--brand-ink) 12%, var(--bg));
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--ink);
+  font-size: 0.875rem;
+}
+.update-notice-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  /* Under the notch on a phone, where the bar is the topmost thing on screen. */
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+.update-notice p { flex: 1 1 auto; min-width: 0; }
+.update-notice .btn {
+  flex: none;
+  padding: 6px 12px;
+}
+
+/* With the bar showing, it owns the notch and the page does not pad for it. */
+.update-notice + .page { padding-top: 14px; }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 10px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .update-notice + .page { padding-top: 10px; }
+  .topbar { padding: 8px 8px 8px 12px; }
+  /* Four header buttons leave no room for the name on a phone; the icon
+     stays, and the heading is still read out. */
+  .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .topbar-actions { gap: 6px; }
+  .game { padding: 16px 10px; }
+  .prompt-hex { font-size: 1.8rem; }
+  .options { gap: 8px; }
+  .swatch-opt { height: 7.5em; }
+  .options[data-count="6"] { grid-template-columns: repeat(2, 1fr); }
+  .options[data-count="6"] .swatch-opt { height: 6em; }
+  .mode-toggle.fourths .mode-btn,
+  .mode-toggle.thirds .mode-btn { font-size: 0.8rem; padding: 8px 4px; }
+  .result-title { font-size: 1.45rem; }
+  .code-big { font-size: 2rem; }
+  .update-notice-inner { flex-wrap: wrap; }
+  .update-notice p { flex-basis: 100%; }
+}

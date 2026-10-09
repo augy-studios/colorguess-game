@@ -1,7 +1,7 @@
 {
     "name": "Color Guess Game by UwU Apps",
-    "short_name": "Color Guess Game",
-    "description": "A simple colorguess app; view live colorguess at a glance!",
+    "short_name": "Color Guess",
+    "description": "Read a hex code and pick its colour, from four swatches up to a full colour wheel. Solo, or with friends on the same wifi.",
     "icons": [{
             "src": "XCG-192.png",
             "type": "image/png",
@@ -27,8 +27,8 @@
         }
     ],
     "start_url": "/",
-    "theme_color": "#cfc",
-    "background_color": "#cfc",
+    "theme_color": "#ccffcc",
+    "background_color": "#ccffcc",
     "display": "standalone",
     "display_override": ["fullscreen", "minimal-ui", "window-controls-overlay"],
     "orientation": "any",
@@ -37,8 +37,7 @@
     "scope": "/",
     "lang": "en",
     "categories": [
-        "entertainment",
-        "lifestyle",
-        "utilities"
+        "games",
+        "entertainment"
     ]
 }
